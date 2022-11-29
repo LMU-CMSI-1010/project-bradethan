@@ -1,0 +1,57 @@
+#Import Libraries
+#Create game that repeatedly asks for guess and passes it through game
+#Function for winning game and errors
+
+
+
+dictionary = PyDictionary()
+past_answers = []
+out_of_guesses = False
+
+class guess ():
+    def _init_(self,letter):
+        self.letter = letter
+    def correct_place(letter):
+        return f'[black on green]{letter}[/]'
+    def correct_letter(letter):
+        return f'[black on yellow]{letter}[/]' 
+    def incorrect_letter(letter):
+        return f'[black on white]{letter}[/]'
+        
+class Board():
+    def __init__(self, answer_list):
+        self.answer_list = answer_list
+    
+    def print_board(self, answer_list):
+        for guesses in answer_list:
+            print(guesses + '/n')
+
+class Game():
+    wordle_answers = ['Answers']
+    number_of_answers = len(wordle_answers)
+    actual_answer = wordle_answers[randint(range(number_of_answers))]
+    def __init__(self, guess):
+        self.guess = guess
+    
+    def real_word(self, guess):
+        if self.guess in dictionary:
+            return True
+        else:
+            return False
+        #need function or method to handle errors
+
+    def update_guesses(self, guess):
+        for letter in self.guess:
+            pass #iterate through each letter and return color
+
+    def run_game(self, guess):
+        past_answers.append(self.guess)
+        if self.real_word(guess) == False:
+            return False
+        if self.guess == self.actual_answer:
+            return True
+        else:
+            self.update_guesses(guess)
+
+while out_of_guesses == False:
+    pass
