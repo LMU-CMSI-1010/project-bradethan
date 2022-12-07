@@ -1,0 +1,79 @@
+from random import *
+import enchant
+from termcolor import colored
+
+
+realWordChecker = enchant.Dict('en_US')
+guesses = 0
+gameOver = 0
+guessList = []
+dummyList = []
+
+def getAnswer(): #Creates wordle answer
+    possibleAnswers = ['hello', 'crane', 'plane' ]
+    actualAnswer = possibleAnswers[randint(0, len(possibleAnswers) - 1)]
+    return actualAnswer
+    
+actualAnswer = getAnswer()
+print('The answer is ' + actualAnswer)
+
+class Game(): #Takes guesses, updates game and returns results
+    def __init__(self,guess ):
+        self.guess = guess
+
+    def guessChecker(self, guess):
+        if realWordChecker.check(guess) == True:
+            return True
+        else:
+            return False
+    def dummy(self, guess):
+        dummyCounter = 0
+        for letter in dummyList:
+            if letter == actualAnswer[dummyCounter]:
+                print(colored(letter, 'green'))
+            elif letter in actualAnswer:
+                print(colored(letter, 'yellow'))
+            else:
+                print(colored(letter, 'grey'))
+            dummyCounter += 1
+            if dummyCounter >= 5:
+                print('-------------')
+                dummyCounter = 0
+    
+    def wordProcessor(self, guess):
+        currentGuess = []
+        for letter in self.guess:
+            currentGuess.append(letter)
+        guessList.append(currentGuess)
+        return guessList
+
+
+
+    
+
+while gameOver == 0: #Runs game
+    guesses += 1
+    if guesses > 5:
+        print("You're out of guesses!")
+        break
+    guess = input('Enter guess #' + str(guesses))
+    updater = Game(guess)
+    if guess == actualAnswer:
+        print(guess + ' was the answer!')
+        break
+    if len(guess) != 5:
+        print('Guess must be five letters')
+    else:
+        if updater.guessChecker(guess) == True:
+            guessList.append(guess)
+            for letter in guess:
+                dummyList.append(letter)
+            updater.dummy(guess)
+        else:
+            print('Guess was not in the dictionary')
+            guesses -= 1
+
+
+    
+#Start of game
+
