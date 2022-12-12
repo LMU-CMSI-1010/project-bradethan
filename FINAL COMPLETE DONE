@@ -1,0 +1,104 @@
+#Inporting libraries
+from random import *
+import enchant
+from termcolor import colored
+
+#Declaring global variables that will be used later on
+realWordChecker = enchant.Dict('en_US')
+guesses = 0
+gameOver = 0
+guessList = []
+LetterList = []
+newBank = []
+
+
+#Creates a word bank of possible answers from a text file
+wordBank = open('answer_bank.txt','r') #Answer txt file comes from New York Times Wordle game 
+possibleAnswers = (wordBank.readlines())
+
+#Generates a solution to the game from a random possible answer in the word bank
+def getAnswer(): #Creates wordle answer
+    actualAnswer = possibleAnswers[randint(0, len(possibleAnswers) - 1)].strip()
+    return actualAnswer
+actualAnswer = getAnswer()
+print(actualAnswer)
+
+#The text file we use has extra white space so this code removes it so each string is only 5 characters
+for i in range(len(possibleAnswers)):
+    placeholder = possibleAnswers[i]
+    newplaceholder = placeholder[0:-1]
+    newBank.append(newplaceholder)
+
+
+class Game(): #Takes guesses, updates game and returns results
+
+    #Saves the users guess for later use
+    def __init__(self,guess ):
+        self.guess = guess
+
+    #Takes the user's guess and checks to see if it is a real word (in the answer bank)
+    def guessChecker(self, guess):
+        if self.guess in newBank:
+            return True
+        else:
+            return False
+    
+    #Takes the user's guess, checks to see how each letter compares to the actual answer
+    #and returns the result
+    def lettercoloring(self, guess):
+        LetterCounter = 0
+        for letter in LetterList:
+            if letter == actualAnswer[LetterCounter]:
+                print(colored(letter, 'green'), end = '')
+            elif letter in actualAnswer:
+                print(colored(letter, 'yellow'), end = '')
+            else:
+                print(colored(letter, 'grey'), end = '')
+            LetterCounter += 1
+            if LetterCounter >= 5:
+                print('')
+                LetterCounter = 0
+    
+    #Adds each guess to a list that saves previous answers for user to compare
+    def wordProcessor(self, guess):
+        currentGuess = []
+        for letter in self.guess:
+            currentGuess.append(letter)
+        guessList.append(currentGuess)
+        return guessList
+
+
+while gameOver == 0: #Runs game
+    guesses += 1
+
+    #Ends the game if user cannot guess in 6 tries and prints answer
+    if guesses > 6:
+        print("You're out of guesses!")
+        print(actualAnswer + ' was the answer!')
+        break
+
+    #Saves guess and uses it in class
+    guess = input('Enter guess #' + str(guesses))
+    updater = Game(guess)
+
+    #Ends the game if the correct answer is guessed
+    if guess == actualAnswer:
+        print(guess + ' was the answer!')
+        break
+
+    #Ensures user guess is 5 letters
+    if len(guess) != 5:
+        print('Guess must be five letters')
+        guesses -=1
+    else:
+        #If guess is a real word, stores guess and returns hints
+        if updater.guessChecker(guess) == True:
+            guessList.append(guess)
+            for letter in guess:
+                LetterList.append(letter)
+            updater.lettercoloring(guess)
+
+        #Prompts user to try again if guess is not real word
+        else:
+            print('Guess was not in the dictionary')
+            guesses -= 1
